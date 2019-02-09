@@ -16,18 +16,23 @@ public abstract class Product {
 	}
 
 	public String getName() {
-		return null;
+		return this.name;
 	}
 
 	public BigDecimal getPrice() {
-		return null;
+		return this.price;
 	}
 
 	public BigDecimal getTaxPercent() {
-		return null;
+		return this.taxPercent;
 	}
 
 	public BigDecimal getPriceWithTax() {
-		return null;
+		/*
+		 * BigDecimal price = this.price; BigDecimal taxPercent = this.taxPercent;
+		 * BigDecimal pricewithtax= price.add(price.multiply(taxPercent));
+		 *return pricewithtax;
+		 */
+		return this.price.add(this.price.multiply(this.taxPercent));
 	}
 }
