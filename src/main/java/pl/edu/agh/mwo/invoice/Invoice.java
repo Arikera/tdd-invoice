@@ -1,46 +1,45 @@
 package pl.edu.agh.mwo.invoice;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import pl.edu.agh.mwo.invoice.product.Product;
 
 public class Invoice {
-
-	private Collection<Product> products = new ArrayList<Product>();
+	private Map<Product, Integer> products = new HashMap<Product, Integer>();
 
 	public void addProduct(Product product) {
-		this.products.add(product);
+		addProduct(product, 1);
 	}
 
 	public void addProduct(Product product, Integer quantity) {
-		for (int i = 0; i < quantity; i++) {
-			this.products.add(product);
+		if (product == null || quantity <= 0) {
+			throw new IllegalArgumentException();
 		}
+		products.put(product, quantity);
 	}
 
-	public BigDecimal getTotalNetValue() {
-		BigDecimal sum = BigDecimal.ZERO;
-		for (Product product : this.products) {
-			sum = sum.add(product.getPrice());
+	public BigDecimal getNetTotal() {
+		BigDecimal totalNet = BigDecimal.ZERO;
+		for (Product product : products.keySet()) {
+			BigDecimal quantity = new BigDecimal(products.get(product));
+			totalNet = totalNet.add(product.getPrice().multiply(quantity));
 		}
-		return sum;
+		return totalNet;
 	}
 
 	public BigDecimal getTax() {
-		BigDecimal tax = BigDecimal.ZERO;
-		for (Product product : this.products) {
-			tax = product.getTaxPercent();
-		}
-		return tax;
+		return getGrossTotal().subtract(getNetTotal());
 	}
 
-	public BigDecimal getTotal() {
-		BigDecimal grosssingle = BigDecimal.ZERO;
-		for (Product product : this.products) {
-			grosssingle = product.get;
+	public BigDecimal getGrossTotal() {
+
+		BigDecimal totalGross = BigDecimal.ZERO;
+		for (Product product : products.keySet()) {
+			BigDecimal quantity = new BigDecimal(products.get(product));
+			totalGross = totalGross.add(product.getPriceWithTax().multiply(quantity));
 		}
-		return sum;
+		return totalGross;
 	}
 }
